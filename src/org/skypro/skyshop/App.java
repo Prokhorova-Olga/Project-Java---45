@@ -1,38 +1,29 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.SimpleProduct;
 
 public class App {
     public static void main(String[] args) {
-        Product apple = new Product("Яблоко", 40);
-        Product banana = new Product("Банан", 50);
-        Product orange = new Product("Апельсин", 40);
-        Product peach = new Product("Персик", 60);
+        SimpleProduct apple = new SimpleProduct("Яблоко", 40);
+        SimpleProduct banana = new SimpleProduct("Банан", 50);
+
+        DiscountedProduct discountedOrange = new DiscountedProduct("Апельсин", 100, 20);
+        FixPriceProduct fixedTomato = new FixPriceProduct("Помидор");
 
         ProductBasket basket = new ProductBasket();
 
         basket.add(apple);
-        basket.add(banana);
-        basket.add(orange);
-        basket.add(peach);
+        basket.add(discountedOrange);
+        basket.add(fixedTomato);
+
 
         basket.printContent();
-        System.out.println("Сумма покупок: " + basket.totalCost());
-
-        basket.add(new Product("Слива", 40));
-        basket.add(new Product("Ананас", 100));
-
-        System.out.println("Есть ли яблоко в корзине? " + basket.containsByName("Яблоко"));
-        System.out.println("Есть ли клубника в корзине? " + basket.containsByName("Клубника"));
-
-
-        basket.clear();
-
-        basket.printContent();
-
-        System.out.println("Сумма пустой корзины: " + basket.totalCost());
-        System.out.println("Есть ли виноград в пустой корзине? " + basket.containsByName("Виноград"));
+        System.out.println("Количество специальных товаров: " + basket.countSpecialProducts());
+        System.out.println("Итоговая сумма: " + basket.totalCost());
 
     }
 }

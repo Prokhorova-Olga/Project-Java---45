@@ -22,16 +22,36 @@ public class ProductBasket {
         return total;
     }
 
+
     public void printContent() {
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                System.out.println(products[i].getName() + ": " + products[i].getPrice());
-            }
-            System.out.println("Итого: " + totalCost());
-        } else {
-            System.out.println("В корзине пусто");
+        if (size <= 0) {
+            System.out.println("Корзина пустая");
+            return;
         }
+
+        int specialItemsCount = 0;
+        for (int i = 0; i < size; i++) {
+            Product item = products[i];
+            System.out.println(item.toString());
+            if (item.isSpecial()) {
+                specialItemsCount++;
+            }
+        }
+        System.out.println("Итого: " + totalCost());
+        System.out.println("Специальных товаров: " + specialItemsCount);
     }
+
+
+    public int countSpecialProducts() {
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            if (products[i].isSpecial()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
 
     public boolean containsByName(String name) {
         for (int i = 0; i < size; i++) {
