@@ -1,10 +1,11 @@
 package org.skypro.skyshop;
 
+import org.skypro.skyshop.article.Article;
 import org.skypro.skyshop.basket.ProductBasket;
-import org.skypro.skyshop.product.DiscountedProduct;
-import org.skypro.skyshop.product.FixPriceProduct;
-import org.skypro.skyshop.product.Product;
-import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.product.*;
+import org.skypro.skyshop.search.SearchEngine;
+
+import java.util.Arrays;
 
 public class App {
     public static void main(String[] args) {
@@ -14,16 +15,30 @@ public class App {
         DiscountedProduct discountedOrange = new DiscountedProduct("Апельсин", 100, 20);
         FixPriceProduct fixedTomato = new FixPriceProduct("Помидор");
 
-        ProductBasket basket = new ProductBasket();
+        Article articleApple = new Article("Лучшие сорта яблок ", "Яблоки бывают ...");
+        Article articleBanana = new Article("Польза бананов  ", "Бананы полезны для здоровья ...");
+        Article articleWatermelon = new Article("Как выбрать арбуз ", "Чтобы выбрать хороший арбуз ...");
 
-        basket.add(apple);
-        basket.add(discountedOrange);
-        basket.add(fixedTomato);
+        SearchEngine engine = new SearchEngine(6);
+        engine.add((apple));
+        engine.add((articleWatermelon));
+        engine.add((articleApple));
+        engine.add((articleBanana));
+        engine.add((fixedTomato));
+        engine.add(discountedOrange);
 
+        System.out.println("Пoиск по слову 'Яблоки': ");
+        Searchable[] elements = engine.search("Яблоки ");
+        for (Searchable element : elements) {
+            if (element != null) {
+                System.out.println(element.getStringRepresentation());
+            }
+        }
+        System.out.println("Поиск по слову 'Бананы': ");
+        Searchable[] results = engine.search("Бананы");
+        String resultString = Arrays.toString(results);
+        System.out.println(resultString);
 
-        basket.printContent();
-        System.out.println("Количество специальных товаров: " + basket.countSpecialProducts());
-        System.out.println("Итоговая сумма: " + basket.totalCost());
 
     }
 }
