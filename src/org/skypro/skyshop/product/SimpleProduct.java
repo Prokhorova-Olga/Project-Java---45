@@ -10,11 +10,13 @@ public class SimpleProduct extends Product {
 
     @Override
     public int getPrice() {
+
         return price;
     }
 
     @Override
     public boolean isSpecial() {
+
         return false;
     }
 
