@@ -2,37 +2,32 @@ package org.skypro.skyshop.search;
 
 import org.skypro.skyshop.product.Searchable;
 
-public class SearchEngine {
-    private Searchable[] elements;
-    private int size = 0;
+import java.util.ArrayList;
+import java.util.List;
 
-    public SearchEngine(int capacity) {
-        elements = new Searchable[capacity];
-    }
+public class SearchEngine {
+    private List<Searchable> elements = new ArrayList<>();
+
 
     public void add(Searchable element) {
-        if (size < elements.length) {
-            elements[size++] = element;
-        } else {
-            System.out.println("Нельзя добавить новый элемент");
-        }
+        elements.add(element);
     }
 
     public Searchable bestMatch(String query) throws BestResultNotFound {
         int maxMathes = -1;
         Searchable bestElement = null;
-        for (int i = 0; i < size; i++) {
-            int mathes = countOccurrences(elements[i].getSearchTerm(), query);
-            if (mathes > maxMathes) {
-                maxMathes = mathes;
-                bestElement = elements[i];
+        for (Searchable element : elements) {
+            int matches = countOccurrences(element.getSearchTerm(), query);
+            if (matches > maxMathes) {
+                maxMathes = matches;
+                bestElement = element;
+            }
         }
-    }
         if (bestElement == null) {
             throw new BestResultNotFound("Лучший результат не найден для запроса '" + query + "'");
         }
-        return  bestElement;
-        }
+        return bestElement;
+    }
 
     private int countOccurrences(String source, String target) {
         int occurrences = 0;
@@ -44,13 +39,11 @@ public class SearchEngine {
         return occurrences;
     }
 
-    public Searchable[] search(String query) {
-        Searchable[] results = new Searchable[5];
-        int found = 0;
-
-        for (int i = 0; i < size && found < elements.length; i++) {
-            if (elements[i].getSearchTerm().contains(query)) {
-                results[found++] = elements[i];
+    public List<Searchable> search(String query) {
+        List<Searchable> results = new ArrayList<>();
+        for (Searchable element : elements) {
+            if (element.getSearchTerm().contains(query)) {
+                results.add(element);
 
             }
         }
