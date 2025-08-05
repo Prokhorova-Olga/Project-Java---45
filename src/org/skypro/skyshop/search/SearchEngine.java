@@ -18,6 +18,32 @@ public class SearchEngine {
         }
     }
 
+    public Searchable bestMatch(String query) throws BestResultNotFound {
+        int maxMathes = -1;
+        Searchable bestElement = null;
+        for (int i = 0; i < size; i++) {
+            int mathes = countOccurrences(elements[i].getSearchTerm(), query);
+            if (mathes > maxMathes) {
+                maxMathes = mathes;
+                bestElement = elements[i];
+        }
+    }
+        if (bestElement == null) {
+            throw new BestResultNotFound("Лучший результат не найден для запроса '" + query + "'");
+        }
+        return  bestElement;
+        }
+
+    private int countOccurrences(String source, String target) {
+        int occurrences = 0;
+        int index = 0;
+        while ((index = source.indexOf(target, index)) != -1) {
+            occurrences++;
+            index += target.length();
+        }
+        return occurrences;
+    }
+
     public Searchable[] search(String query) {
         Searchable[] results = new Searchable[5];
         int found = 0;
