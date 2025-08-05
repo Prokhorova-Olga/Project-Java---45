@@ -2,36 +2,53 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+
 public class ProductBasket {
-    private Product[] products = new Product[5];
-    private int size = 0;
+    private List<Product> products = new ArrayList<>();
 
     public void add(Product product) {
-        if (size < products.length) {
-            products[size++] = product;
-        } else {
-            System.out.println("Невозможно добавить товар");
+        products.add(product);
+    }
+
+    public List<Product> removeByName(String name) {
+        List<Product> removedProducts = new ArrayList<>();
+        Iterator<Product> iterator = products.iterator();
+        while (iterator.hasNext()) {
+            Product currentProduct = iterator.next();
+            if (currentProduct.getName().equals(name)) {
+                removedProducts.add(currentProduct);
+                iterator.remove();
+            }
         }
+        return removedProducts;
     }
 
     public int totalCost() {
         int total = 0;
-        for (int i = 0; i < size; i++) {
-            total += products[i].getPrice();
+        for (Product product : products) {
+            total += product.getPrice();
         }
         return total;
     }
 
 
     public void printContent() {
-        if (size <= 0) {
+        if (products.isEmpty()) {
             System.out.println("Корзина пустая");
-            return;
+        } else {
+            for (Product product : products) {
+                System.out.println(product.getStringRepresentation());
+
+            }
         }
 
         int specialItemsCount = 0;
-        for (int i = 0; i < size; i++) {
-            Product item = products[i];
+        for (Product product : products) {
+            Product item = product;
             System.out.println(item.toString());
             if (item.isSpecial()) {
                 specialItemsCount++;
@@ -44,8 +61,8 @@ public class ProductBasket {
 
     public int countSpecialProducts() {
         int count = 0;
-        for (int i = 0; i < size; i++) {
-            if (products[i].isSpecial()) {
+        for (Product product : products) {
+            if (product.isSpecial()) {
                 count++;
             }
         }
@@ -54,8 +71,8 @@ public class ProductBasket {
 
 
     public boolean containsByName(String name) {
-        for (int i = 0; i < size; i++) {
-            if (products[i].getName().equals(name)) {
+        for (Product product : products) {
+            if (product.getName().equals(name)) {
                 return true;
             }
         }
@@ -63,10 +80,7 @@ public class ProductBasket {
     }
 
     public void clear() {
-        for (int i = 0; i < size; i++) {
-            products[i] = null;
-        }
-        size = 0;
+        products.clear();
     }
 
 }
