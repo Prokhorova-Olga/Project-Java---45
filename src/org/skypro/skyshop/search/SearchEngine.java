@@ -3,7 +3,9 @@ package org.skypro.skyshop.search;
 import org.skypro.skyshop.product.Searchable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SearchEngine {
     private List<Searchable> elements = new ArrayList<>();
@@ -39,11 +41,11 @@ public class SearchEngine {
         return occurrences;
     }
 
-    public List<Searchable> search(String query) {
-        List<Searchable> results = new ArrayList<>();
+    public Map<String, Searchable> search(String query) {
+        Map<String, Searchable> results = new LinkedHashMap<>();
         for (Searchable element : elements) {
             if (element.getSearchTerm().contains(query)) {
-                results.add(element);
+                results.put(element.getName(), element);
 
             }
         }

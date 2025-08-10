@@ -8,6 +8,7 @@ import org.skypro.skyshop.search.BestResultNotFound;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
@@ -47,8 +48,8 @@ public class App {
         engine.add(articleBanana);
 
         System.out.println("Поиск по запросу 'Яблоко': ");
-        List<Searchable> results = engine.search("Яблоко");
-        for (Searchable result : results) {
+        Map<String, Searchable> results = engine.search("Яблоко");
+        for (Searchable result : results.values()) {
             System.out.println(result.getStringRepresentation());
         }
 
