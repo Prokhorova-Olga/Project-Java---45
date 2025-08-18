@@ -2,13 +2,10 @@ package org.skypro.skyshop.search;
 
 import org.skypro.skyshop.product.Searchable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SearchEngine {
-    private List<Searchable> elements = new ArrayList<>();
+    private Set<Searchable> elements = new HashSet<>();
 
 
     public void add(Searchable element) {
@@ -41,11 +38,23 @@ public class SearchEngine {
         return occurrences;
     }
 
-    public Map<String, Searchable> search(String query) {
-        Map<String, Searchable> results = new LinkedHashMap<>();
+    public Set<Searchable> search(String query) {
+        Comparator<Searchable> comparator = new Comparator<>() {
+
+            @Override
+            public int compare(Searchable s1, Searchable s2) {
+                int lenCompare = Integer.compare(s2.getName().length(), s1.getName().length());
+                if (lenCompare != 0) {
+                    return lenCompare;
+                }
+                return s1.getName().compareTo(s2.getName());
+            }
+        };
+
+        Set<Searchable> results = new TreeSet<>(comparator);
         for (Searchable element : elements) {
             if (element.getSearchTerm().contains(query)) {
-                results.put(element.getName(), element);
+                results.add(element);
 
             }
         }
