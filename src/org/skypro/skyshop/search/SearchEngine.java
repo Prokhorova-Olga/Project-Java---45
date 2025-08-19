@@ -39,26 +39,13 @@ public class SearchEngine {
     }
 
     public Set<Searchable> search(String query) {
-        Comparator<Searchable> comparator = new Comparator<>() {
 
-            @Override
-            public int compare(Searchable s1, Searchable s2) {
-                int lenCompare = Integer.compare(s2.getName().length(), s1.getName().length());
-                if (lenCompare != 0) {
-                    return lenCompare;
-                }
-                return s1.getName().compareTo(s2.getName());
-            }
-        };
-
-        Set<Searchable> results = new TreeSet<>(comparator);
+        Set<Searchable> results = new TreeSet<>(new SearchableComparator());
         for (Searchable element : elements) {
             if (element.getSearchTerm().contains(query)) {
                 results.add(element);
-
             }
         }
         return results;
-
     }
 }
