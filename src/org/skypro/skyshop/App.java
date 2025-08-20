@@ -85,6 +85,5 @@ public class App {
         System.out.println("\nТекущие товары в корзине:");
         basket.printContent();
 
-
     }
 }

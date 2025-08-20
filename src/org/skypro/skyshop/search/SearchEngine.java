@@ -3,6 +3,7 @@ package org.skypro.skyshop.search;
 import org.skypro.skyshop.product.Searchable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchEngine {
     private Set<Searchable> elements = new HashSet<>();
@@ -39,13 +40,9 @@ public class SearchEngine {
     }
 
     public Set<Searchable> search(String query) {
+        return elements.stream()
+                .filter(element -> element.getSearchTerm().contains(query))
+                .collect(Collectors.toCollection(() -> new TreeSet<>(new SearchableComparator())));
 
-        Set<Searchable> results = new TreeSet<>(new SearchableComparator());
-        for (Searchable element : elements) {
-            if (element.getSearchTerm().contains(query)) {
-                results.add(element);
-            }
-        }
-        return results;
     }
 }
