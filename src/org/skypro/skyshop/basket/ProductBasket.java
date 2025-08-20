@@ -14,21 +14,18 @@ public class ProductBasket {
     }
 
     public List<Product> removeByName(String name) {
-        List<Product> removedProducts = new ArrayList<>();
-        List<Product> matchingProducts = products.getOrDefault(name, Collections.emptyList());
-        removedProducts.addAll(matchingProducts);
-        products.remove(name);
-        return removedProducts;
+        List<Product> removeProducts = products.remove(name);
+        if (removeProducts == null) {
+            return new ArrayList<>();
+        }
+        return removeProducts;
     }
 
     public int totalCost() {
-        int total = 0;
-        for (List<Product> productGroup : products.values()) {
-            for (Product product : productGroup) {
-                total += product.getPrice();
-            }
-        }
-        return total;
+        return products.values().stream()
+                .flatMap(List::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
 
@@ -36,38 +33,22 @@ public class ProductBasket {
         if (products.isEmpty()) {
             System.out.println("Корзина пустая");
         } else {
-            TreeSet<String> sortedNames = new TreeSet<>(products.keySet());
-            for (String name : sortedNames) {
-                List<Product> sameNameProducts = products.get(name);
-                for (Product product : sameNameProducts) {
-                    System.out.println(product.getStringRepresentation());
-                }
-            }
+            products.values().stream()
+                    .flatMap(List::stream)
+                    .forEach(System.out::println);
 
-            int specialItemsCount = 0;
-            for (List<Product> productGroup : products.values()) {
-                for (Product product : productGroup) {
-                    if (product.isSpecial()) {
-                        specialItemsCount++;
-                    }
-                }
-            }
+            long specialItemsCount = countSpecialProducts();
             System.out.println("Итого: " + totalCost());
             System.out.println("Специальных товаров: " + specialItemsCount);
+
         }
     }
 
-
-    public int countSpecialProducts() {
-        int count = 0;
-        for (List<Product> productGroup : products.values()) {
-            for (Product product : productGroup) {
-                if (product.isSpecial()) {
-                    count++;
-                }
-            }
-        }
-        return count;
+    private long countSpecialProducts() {
+        return products.values().stream()
+                .flatMap(List::stream)
+                .filter(Product::isSpecial)
+                .count();
     }
 
 
