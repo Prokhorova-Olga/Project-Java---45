@@ -1,25 +1,27 @@
 package org.skypro.skyshop.product;
 
+import java.util.Objects;
+
 public class DiscountedProduct extends Product {
     private final int basePrice;
-    private final int discountPercent;
+    private final int discountPercentage;
+
 
     public DiscountedProduct(String name, int basePrice, int discountPercent) {
         super(name);
-        this.basePrice = basePrice;
-        if (basePrice < 0) {
-            throw new IllegalArgumentException("Базовая цена должна быть строго больше нуля");
-        }
-
-        this.discountPercent = discountPercent;
-        if (discountPercent < 0 || discountPercent > 100) {
+        if (basePrice < 1) {
+            throw new IllegalArgumentException("Базовая цена должна быть больше нуля");
+        } else if (discountPercent < 0 || discountPercent > 100) {
             throw new IllegalArgumentException("Процент скидки не может быть меньше 0 или больше 100");
         }
+        this.basePrice = basePrice;
+        this.discountPercentage = discountPercent;
+
     }
 
     @Override
     public int getPrice() {
-        return (basePrice * (100 - discountPercent)) / 100;
+        return basePrice - ((basePrice * discountPercentage) / 100);
     }
 
     @Override
@@ -29,6 +31,20 @@ public class DiscountedProduct extends Product {
 
     @Override
     public String toString() {
-        return getName() + " : " + getPrice() + " (" + discountPercent + "%)";
+        return "имя продукта со скидкой: " + getName() + " стоимость: " + getPrice() + " скидка " + discountPercentage + "%)";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DiscountedProduct that = (DiscountedProduct) o;
+        return basePrice == that.basePrice && discountPercentage == that.discountPercentage;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(basePrice, discountPercentage);
+    }
+
+
 }

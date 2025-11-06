@@ -3,49 +3,55 @@ package org.skypro.skyshop.search;
 import org.skypro.skyshop.product.Searchable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchEngine {
     private Set<Searchable> elements = new HashSet<>();
 
-
-    public void add(Searchable element) {
-        elements.add(element);
+    public SearchEngine(Set<Searchable> elements) {
+        this.elements = elements;
     }
 
-    public Searchable bestMatch(String query) throws BestResultNotFound {
-        int maxMathes = -1;
-        Searchable bestElement = null;
-        for (Searchable element : elements) {
-            int matches = countOccurrences(element.getSearchTerm(), query);
-            if (matches > maxMathes) {
-                maxMathes = matches;
-                bestElement = element;
-            }
-        }
-        if (bestElement == null) {
-            throw new BestResultNotFound("Лучший результат не найден для запроса '" + query + "'");
-        }
-        return bestElement;
-    }
 
-    private int countOccurrences(String source, String target) {
-        int occurrences = 0;
-        int index = 0;
-        while ((index = source.indexOf(target, index)) != -1) {
-            occurrences++;
-            index += target.length();
+    public void addSearchable(Searchable element) {
+        if (element != null) {
+            elements.add(element);
         }
-        return occurrences;
     }
 
     public Set<Searchable> search(String query) {
+        return elements.stream()
+                .filter(Objects::nonNull)
+                .filter(element -> element.getSearchTerm().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toCollection(() -> new TreeSet<>(new SearchableComparator())));
+    }
 
-        Set<Searchable> results = new TreeSet<>(new SearchableComparator());
+    public Searchable findTheMostAppropriateElementMatch(String substring) throws BestResultNotFound {
+
+        int maxCount = 0;
+        Searchable bestResult = null;
+
         for (Searchable element : elements) {
-            if (element.getSearchTerm().contains(query)) {
-                results.add(element);
+            if (element == null) {
+                continue;
+            }
+            int count = 0;
+            int index = 0;
+            int foundIndex = element.getSearchTerm().indexOf(substring, index);
+            while (foundIndex != -1) {
+                count++;
+                index = foundIndex + substring.length();
+                foundIndex = element.getSearchTerm().indexOf(substring, index);
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                bestResult = element;
             }
         }
-        return results;
+        if (maxCount == 0) {
+            throw new BestResultNotFound("Совпадений по запросу не найдено");
+        }
+        return bestResult;
     }
+
 }

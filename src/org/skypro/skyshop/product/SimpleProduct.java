@@ -5,8 +5,8 @@ public class SimpleProduct extends Product {
 
     public SimpleProduct(String name, int price) {
         super(name);
-        if (price <= 0) {
-            throw new IllegalArgumentException("Цена должна быть строго больше нуля");
+        if (price < 1) {
+            throw new IllegalArgumentException("Цена должна быть больше нуля");
         }
         this.price = price;
     }
@@ -25,7 +25,14 @@ public class SimpleProduct extends Product {
 
     @Override
     public String toString() {
-        return getName() + " : " + getPrice();
+        return "имя продукта: " + getName() + " стоимость " + getPrice();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleProduct that = (SimpleProduct) o;
+        return price == that.price;
     }
 }
 
