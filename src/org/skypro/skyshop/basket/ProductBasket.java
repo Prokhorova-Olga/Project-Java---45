@@ -8,55 +8,81 @@ import java.util.*;
 public class ProductBasket {
     private Map<String, List<Product>> products = new HashMap<>();
 
-    public void add(Product product) {
-        String name = product.getName();
-        products.computeIfAbsent(name, k -> new ArrayList<>()).add(product);
+    public void addProduct(Product product) {
+        String productName = product.getName();
+        products.computeIfAbsent(productName, k -> new ArrayList<>()).add(product);
     }
 
-    public List<Product> removeByName(String name) {
-        List<Product> removeProducts = products.remove(name);
-        if (removeProducts == null) {
-            return new ArrayList<>();
+    public List<Product> deleteProductsByName(String name) {
+        List<Product> deletedProducts = new ArrayList<>();
+        if (products.containsKey(name)) {
+            List<Product> productList = products.get(name);
+            Iterator<Product> iterator = productList.iterator();
+            while (iterator.hasNext()) {
+                Product product = iterator.next();
+                if (product.getName() != null && product.getName().equalsIgnoreCase(name)) {
+                    deletedProducts.add(product);
+                    iterator.remove();
+                }
+            }
+            if (deletedProducts.isEmpty()) {
+                products.remove(name);
+                System.out.println("Список пуст");
+            }
         }
-        return removeProducts;
+        if (deletedProducts.isEmpty()) {
+            System.out.println("Продукты с именем " + name + " не найдены");
+        }
+        return deletedProducts;
     }
 
-    public int totalCost() {
+
+    public int calculateTheTotalCostOfTheBasket() {
         return products.values().stream()
-                .flatMap(List::stream)
+                .flatMap(Collection::stream)
                 .mapToInt(Product::getPrice)
                 .sum();
     }
 
 
-    public void printContent() {
+    public void printTheContentsOfTheBasket() {
         if (products.isEmpty()) {
             System.out.println("Корзина пустая");
-        } else {
-            products.values().stream()
-                    .flatMap(List::stream)
-                    .forEach(System.out::println);
-
-            long specialItemsCount = countSpecialProducts();
-            System.out.println("Итого: " + totalCost());
-            System.out.println("Специальных товаров: " + specialItemsCount);
-
+            return;
         }
+        products.entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .filter(entry -> !entry.getValue().isEmpty())
+                .forEach(entry -> {
+                    System.out.println(entry.getKey() + ":");
+                    entry.getValue().stream()
+                            .filter(Objects::nonNull)
+                            .forEach(product -> {
+                                System.out.println(product.getSearchTerm() + " - Цена " + product.getPrice());
+                            });
+                    System.out.println();
+                });
+
+        System.out.println("Итого: общая стоимость корзины " + calculateTheTotalCostOfTheBasket());
+        System.out.println("Количество специальных товаров " + countSpecialProducts());
+
     }
 
-    private long countSpecialProducts() {
-        return products.values().stream()
-                .flatMap(List::stream)
+
+    private int countSpecialProducts() {
+        return (int) products.values().stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 .filter(Product::isSpecial)
                 .count();
     }
 
 
-    public boolean containsByName(String name) {
+    public boolean checkTheProductName(String name) {
         return products.containsKey(name);
     }
 
-    public void clear() {
+    public void clearTheBasket() {
         products.clear();
     }
 }
